@@ -13,7 +13,8 @@
 
     <files>
         <filename plugin="customtablesword">customtablesword.php</filename>
-	<filename>index.html</filename>
+        <filename>bootstrap.php</filename>
+	    <filename>index.html</filename>
 	<folder>vendor</folder>
     </files>
 

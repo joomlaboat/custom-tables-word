@@ -23,7 +23,6 @@ class Twig_PHPWord_Tags
         //Generates a new .docx file and returns the link to that file if successful.
 
         if ($templateFile == '') {
-
             echo 'Template file name not specified.';
             return null;
         }
@@ -51,6 +50,7 @@ class Twig_PHPWord_Tags
         require_once 'bootstrap.php';
 
         $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor($templateFile);
+
         foreach ($values as $key => $item) {
             $templateProcessor->setValue($key, $item);
         }
