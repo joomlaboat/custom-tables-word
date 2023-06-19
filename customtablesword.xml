@@ -12,7 +12,7 @@
     <description>A plugin to generate Microsoft Word documents using Custom Tables record values.</description>
 
     <files>
-        <filename plugin="customtables">customtablesword.php</filename>
+        <filename plugin="customtablesword">customtablesword.php</filename>
 	<filename>index.html</filename>
 	<folder>vendor</folder>
     </files>
