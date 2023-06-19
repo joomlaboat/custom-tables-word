@@ -35,12 +35,10 @@ class Twig_PHPWord_Tags
             return null;
         }
 
+        $webFileLink = '';
         if ($saveAsFile === null) {
-            $saveAsFile = JoomlaBasicMisc::suggest_TempFileName('docx');
+            $saveAsFile = JoomlaBasicMisc::suggest_TempFileName($webFileLink,'docx');
         } else {
-            if ($saveAsFile[0] != '/' and $saveAsFile[0] != '\\')
-                $saveAsFile = JPATH_SITE . DIRECTORY_SEPARATOR . $saveAsFile;
-
             if (file_exists($saveAsFile)) {
                 echo 'File "' . $saveAsFile . '" already exists.';
                 return null;
@@ -56,6 +54,6 @@ class Twig_PHPWord_Tags
         }
 
         $templateProcessor->saveAs($saveAsFile);
-        return $saveAsFile;
+        return $webFileLink;
     }
 }
