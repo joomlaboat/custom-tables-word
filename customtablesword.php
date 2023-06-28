@@ -84,7 +84,7 @@ class Twig_PHPWord_Tags
         $document_with_table = new PhpWord();
         //$section = $document_with_table->addSection();
         //$table = $section->addTable();//'myOwnTableStyle');
-        $table = new Table(array('borderSize' => 7, 'borderColor' => 'black', 'width' => 8500, 'unit' => TblWidth::TWIP));
+        $table = new Table(array('borderSize' => 7, 'borderColor' => '000000', 'width' => 8500, 'unit' => TblWidth::TWIP));
 
         //$styleCell = array('borderTopSize'=>1 ,'borderTopColor' =>'black','borderLeftSize'=>1,'borderLeftColor' =>'black','borderRightSize'=>1,'borderRightColor'=>'black','borderBottomSize' =>1,'borderBottomColor'=>'black' );
         $TfontStyle = array('bold' => false, 'italic' => false, 'size' => 12, 'name' => 'Times New Roman', 'afterSpacing' => 0, 'Spacing' => 0, 'cellMargin' => 0);
@@ -101,7 +101,7 @@ class Twig_PHPWord_Tags
                     if ($count == 1)
                         $table->addCell(700)->addText($item, $TfontStyle);
                     else
-                        $table->addCell()->addText($item, $TfontStyle);
+                        $table->addCell(2500)->addText($item, $TfontStyle);
                 }
             }
 
@@ -115,7 +115,7 @@ class Twig_PHPWord_Tags
                     if ($count == 1)
                         $table->addCell(700)->addText($item, $TfontStyle);
                     else
-                        $table->addCell()->addText($item, $TfontStyle);
+                        $table->addCell(2500)->addText($item, $TfontStyle);
                 }
             }
         }
