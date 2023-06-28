@@ -14,7 +14,11 @@ if (!defined('_JEXEC') and !defined('WPINC')) {
     die('Restricted access');
 }
 
+use DOMDocument;
 use JoomlaBasicMisc;
+use PhpOffice\PhpWord\Element\Table;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\SimpleType\TblWidth;
 
 class Twig_PHPWord_Tags
 {
@@ -37,7 +41,7 @@ class Twig_PHPWord_Tags
 
         $webFileLink = '';
         if ($saveAsFile === null) {
-            $saveAsFile = JoomlaBasicMisc::suggest_TempFileName($webFileLink,'docx');
+            $saveAsFile = JoomlaBasicMisc::suggest_TempFileName($webFileLink, 'docx');
         } else {
             if (file_exists($saveAsFile)) {
                 echo 'File "' . $saveAsFile . '" already exists.';
@@ -50,10 +54,71 @@ class Twig_PHPWord_Tags
         $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor($templateFile);
 
         foreach ($values as $key => $item) {
-            $templateProcessor->setValue($key, $item);
+
+            if (str_contains(strtolower($item), '<table')) {
+                $item = mb_convert_encoding($item, 'UTF-8', 'UTF-8');
+                $table = $this->parseHTMLTable($item);
+                $templateProcessor->setComplexBlock('Table', $table);
+            } else {
+                $item = strip_tags($item);
+                $utf8_string = mb_convert_encoding($item, 'UTF-8', 'UTF-8');
+                $templateProcessor->setValue($key, $utf8_string);
+            }
         }
 
         $templateProcessor->saveAs($saveAsFile);
         return $webFileLink;
+    }
+
+    protected function parseHTMLTable($string)
+    {
+        $dom = new domDocument;
+        @$dom->loadHTML($string);
+        $dom->preserveWhiteSpace = false;
+        $tables = $dom->getElementsByTagName('table');
+
+        $rows = $tables->item(0)->getElementsByTagName('tr');
+        if (count($rows) == 0)
+            return null;
+
+        $document_with_table = new PhpWord();
+        //$section = $document_with_table->addSection();
+        //$table = $section->addTable();//'myOwnTableStyle');
+        $table = new Table(array('borderSize' => 7, 'borderColor' => 'black', 'width' => 8500, 'unit' => TblWidth::TWIP));
+
+        //$styleCell = array('borderTopSize'=>1 ,'borderTopColor' =>'black','borderLeftSize'=>1,'borderLeftColor' =>'black','borderRightSize'=>1,'borderRightColor'=>'black','borderBottomSize' =>1,'borderBottomColor'=>'black' );
+        $TfontStyle = array('bold' => false, 'italic' => false, 'size' => 12, 'name' => 'Times New Roman', 'afterSpacing' => 0, 'Spacing' => 0, 'cellMargin' => 0);
+
+        foreach ($rows as $row) {
+
+            $cols = $row->getElementsByTagName('th');
+            if (count($cols) > 0) {
+                $table->addRow();
+                $count = 0;
+                foreach ($cols as $col) {
+                    $count += 1;
+                    $item = utf8_decode($col->textContent);//mb_convert_encoding($col->textContent, 'UTF-7','UTF-8');
+                    if ($count == 1)
+                        $table->addCell(700)->addText($item, $TfontStyle);
+                    else
+                        $table->addCell()->addText($item, $TfontStyle);
+                }
+            }
+
+            $cols = $row->getElementsByTagName('td');
+            if (count($cols) > 0) {
+                $table->addRow();
+                $count = 0;
+                foreach ($cols as $col) {
+                    $count += 1;
+                    $item = utf8_decode($col->textContent);//mb_convert_encoding($col->textContent, 'UTF-7','UTF-8');
+                    if ($count == 1)
+                        $table->addCell(700)->addText($item, $TfontStyle);
+                    else
+                        $table->addCell()->addText($item, $TfontStyle);
+                }
+            }
+        }
+        return $table;
     }
 }
