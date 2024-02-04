@@ -14,8 +14,8 @@ if (!defined('_JEXEC') and !defined('WPINC')) {
     die('Restricted access');
 }
 
+use CustomTables\CTMiscHelper;
 use DOMDocument;
-use JoomlaBasicMisc;
 use PhpOffice\PhpWord\Element\Table;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\SimpleType\TblWidth;
@@ -41,7 +41,7 @@ class Twig_PHPWord_Tags
 
         $webFileLink = '';
         if ($saveAsFile === null) {
-            $saveAsFile = JoomlaBasicMisc::suggest_TempFileName($webFileLink, 'docx');
+            $saveAsFile = CTMiscHelper::suggest_TempFileName($webFileLink, 'docx');
         } else {
             if (file_exists($saveAsFile)) {
                 echo 'File "' . $saveAsFile . '" already exists.';
